@@ -1,0 +1,24 @@
+project-name/
+ ├── node_modules/              # 依存パッケージのフォルダ
+ ├── src/                       # ソースコードのルートフォルダ
+ |    ├── app.controller.ts     # 基本的なコントローラーファイル
+ |    ├── app.module.ts         # アプリケーションのルートモジュールファイル
+ |    ├── app.service.ts        # 基本的なサービスファイル
+ |    └── main.ts               # アプリケーションのエントリーポイントファイル
+ ├── test/                      # テスト関連のファイルを配置するフォルダ
+ ├── .gitignore                 # Gitが無視するファイル/ディレクトリのリスト
+ ├── nest-cli.json              # Nest CLIの設定ファイル
+ ├── package.json               # プロジェクトのメタデータと依存関係が記述されたファイル
+ ├── tsconfig.build.json        # TypeScriptのビルド設定ファイル
+ ├── tsconfig.json              # TypeScriptのコンパイラ設定ファイル
+ └── README.md                  # プロジェクトの説明が書かれたドキュメントファイル
+
+[新規プロジェクト作成]
+nest new プロジェクト名
+
+[モジュールやコントローラー作成]
+nest generate | g module[or controller] モジュール名
+
+
+serviceをcontrollerから呼び出すときはconstructorで引数を指定して呼び出す
+constructor(readonly postService: PostsService)
