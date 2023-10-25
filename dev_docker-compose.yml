@@ -1,0 +1,92 @@
+name: go-project
+version: '3' # composeファイルのバージョン
+services:
+  work_spsce:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
+      - /var/run/docker.sock:/var/run/docker.sock
+    tty: true # コンテナの永続化
+    env_file: # .envファイル
+      - ./backend/.go_env
+    environment:
+      DB_HOST: db
+      TZ: Asia/Tokyo
+    ports: 
+      - 8082:8080
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+  app_dev: # サービス名
+    build: # ビルドに使うDockerファイルのパス
+      context: ./backend
+      dockerfile: ./Dockerfile.dev
+    volumes: # マウントディレクトリ
+      - ./backend:/app/backend
+    tty: true # コンテナの永続化
+    env_file: # .envファイル
+      - ./backend/.go_env
+    environment:
+      DB_HOST: db
+      TZ: Asia/Tokyo
+    ports: 
+      - 8080:8080
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+  app_prod:
+    build: # ビルドに使うDockerファイルのパス
+      context: ./backend
+      dockerfile: ./Dockerfile.prod
+    volumes: # マウントディレクトリ
+      - ./backend:/app
+    tty: true # コンテナの永続化
+    env_file: # .envファイル
+      - ./backend/.go_env
+    environment:
+      DB_HOST: db
+      TZ: Asia/Tokyo
+    ports: 
+      - 8081:8080
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+      
+  frontend:
+    volumes:
+      - ./frontend:/app/frontend
+    tty: true # コンテナの永続化
+    environment:
+      TZ: Asia/Tokyo
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports: 
+      - 3000:3000
+    networks:
+      - mynetwork
+    
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: testdb
+    ports:
+      - 5432:5432
+    networks:
+      - mynetwork
+      
+volumes:
+  postgres_data:
+
+networks:
+  mynetwork:
